@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
 try:
     import json
 except ImportError:
@@ -19,8 +21,9 @@ auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
 
 # Create the api to connect to twitter with your creadentials
 # api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, compression=True)
-GET https://api.twitter.com/1.1/statuses/user_timeline.json?ussconstitution=twitterapi&count=2
-api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, compression=True)
+#GET api.twitter.com/1.1/statuses/user_timeline.json?ussconstitution=twitterapi&count=2
+tweepy.API.get_user(id=ussconstitution)
+api = tweepy.API.user_timeline(id=ussconstitution, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, compression=True)
 #---------------------------------------------------------------------------------------------------------------------
 # wait_on_rate_limit= True;  will make the api to automatically wait for rate limits to replenish
 # wait_on_rate_limit_notify= Ture;  will make the api  to print a notification when Tweepyis waiting for rate limits to replenish
@@ -32,7 +35,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, 
 # This is the equivalent of /timeline/home on the Web.
 #---------------------------------------------------------------------------------------------------------------------
 
-for status in tweepy.Cursor(api.ussconstitution).items(200):
+for status in tweepy.Cursor(api.user_timeline).items(200):
 	print(status._json)
 	
 #---------------------------------------------------------------------------------------------------------------------

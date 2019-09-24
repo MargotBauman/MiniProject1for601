@@ -1,44 +1,65 @@
-#!/usr/local/bin/python
-# -*- coding: utf-8 -*-
-try:
-    import json
-except ImportError:
-    import simplejson as json
-
-# Import the tweepy library
-import tweepy
-
-# Variables that contains the user credentials to access Twitter API 
-ACCESS_TOKEN = 'xxx'
-ACCESS_SECRET = 'xxx'
-CONSUMER_KEY = 'xxx'
-CONSUMER_SECRET = 'xxx'
-
-# Setup tweepy to authenticate with Twitter credentials:
-
-auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
-
-# Create the api to connect to twitter with your creadentials
-# api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, compression=True)
-#GET api.twitter.com/1.1/statuses/user_timeline.json?ussconstitution=twitterapi&count=2
-tweepy.API.get_user(id=ussconstitution)
-api = tweepy.API.user_timeline(id=ussconstitution, wait_on_rate_limit=True, wait_on_rate_limit_notify=True, compression=True)
-#---------------------------------------------------------------------------------------------------------------------
-# wait_on_rate_limit= True;  will make the api to automatically wait for rate limits to replenish
-# wait_on_rate_limit_notify= Ture;  will make the api  to print a notification when Tweepyis waiting for rate limits to replenish
-#---------------------------------------------------------------------------------------------------------------------
+#!/usr/bin/env python
+# encoding: utf-8
+#Author - Prateek Mehta
 
 
-#---------------------------------------------------------------------------------------------------------------------
-# The following loop will print most recent statuses, including retweets, posted by the authenticating user and that user’s friends. 
-# This is the equivalent of /timeline/home on the Web.
-#---------------------------------------------------------------------------------------------------------------------
+import tweepy #https://github.com/tweepy/tweepy
+import json
 
-for status in tweepy.Cursor(api.user_timeline).items(200):
-	print(status._json)
-	
-#---------------------------------------------------------------------------------------------------------------------
-# Twitter API development use pagination for Iterating through timelines, user lists, direct messages, etc. 
-# To help make pagination easier and Tweepy has the Cursor object.
-#-------------------------------------------------------------------------------
+
+#Twitter API credentials
+consumer_key = "xxx"
+consumer_secret = "xxx"
+access_key = "xxx"
+access_secret = "xxx"
+
+
+def get_all_tweets(ussconstitution):
+    
+    #Twitter only allows access to a users most recent 3240 tweets with this method
+    
+    #authorize twitter, initialize tweepy
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_key, access_secret)
+    api = tweepy.API(auth)
+    
+    #initialize a list to hold all the tweepy Tweets
+    alltweets = []    
+    
+    #make initial request for most recent tweets (200 is the maximum allowed count)
+    new_tweets = api.user_timeline(screen_name = "ussconstitution",count=10)
+    
+    #save most recent tweets
+    alltweets.extend(new_tweets)
+    
+    #save the id of the oldest tweet less one
+    oldest = alltweets[-1].id - 1
+    
+    #keep grabbing tweets until there are no tweets left to grab
+    while len(new_tweets) > 0:
+        
+        #all subsiquent requests use the max_id param to prevent duplicates
+        new_tweets = api.user_timeline(screen_name = "ussconstitution",count=10,max_id=oldest)
+        
+        #save most recent tweets
+        alltweets.extend(new_tweets)
+        
+        #update the id of the oldest tweet less one
+        oldest = alltweets[-1].id - 1
+        if(len(alltweets) > 15):
+            break
+        print ("...%s tweets downloaded so far" % (len(alltweets)))
+       
+    #write tweet objects to JSON
+    file = open('tweet.json', 'w') 
+    print ("Writing tweet objects to JSON please wait...")
+    for status in alltweets:
+        json.dump(status._json,file,sort_keys = True,indent = 4)
+    
+    #close the file
+    print ("Done")
+    file.close()
+
+if __name__ == '__main__':
+    #pass in the username of the account you want to download
+    get_all_tweets("ussconstitution")

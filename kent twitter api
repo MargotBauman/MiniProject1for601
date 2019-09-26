@@ -7,7 +7,7 @@ import json
 
 def get_all_tweets(screen_name):
     
-    #Twitter only allows access to a users most recent 3240 tweets with this method
+    #Twitter only allows access to a users most recent 3240 tweets with this method    
     
     #authorize twitter, initialize tweepy
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -53,4 +53,7 @@ def get_all_tweets(screen_name):
 
 if __name__ == '__main__':
     #pass in the username of the account you want to download
-    get_all_tweets("@liuhaoran_intl")
+    
+     #adding ability to take twitter name from user 9/26
+    screen_name = input("Please enter the twitter handle of the attraction you're interested in:")
+    get_all_tweets(screen_name)

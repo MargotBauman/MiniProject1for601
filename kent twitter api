@@ -5,6 +5,11 @@
 import tweepy #https://github.com/tweepy/tweepy
 import json
 
+consumer_key = "xxx"
+consumer_secret = "xxx"
+access_key = "xxx"
+access_secret = "xxx"
+
 def get_all_tweets(screen_name):
     
     #Twitter only allows access to a users most recent 3240 tweets with this method

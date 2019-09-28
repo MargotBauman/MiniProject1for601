@@ -62,14 +62,11 @@ def get_score(text):
 
 	sentimentsList = []
 
-#num_texts = 0 #hold number of texts considered (also iterator for while loop)
-
 # The text to analyze
 
 	text1 = testjson.gettext()
 	for text1 in text:
-    #num_texts = num_texts + 1
-    #text = u"This is BIZARRE! Here's Joe Biden telling the story of his face-off with a gang of razor-wielding ne'er-do-wells led by a guy named 'Corn Pop.'"
+  
             document = types.Document(
                 content=text1,
                 type=enums.Document.Type.PLAIN_TEXT)
@@ -78,7 +75,6 @@ def get_score(text):
             sentimentsList.append(client.analyze_sentiment(document=document).document_sentiment)
             avg_sentiment = (sum(sentimentsList))/(len(sentimentsList))
 
-	#return avg_sentiment
 
     #print('Text: {}'.format(text1))
     #print('Sentiment: {}, {}'.format(sentiment.score, sentiment.magnitude))

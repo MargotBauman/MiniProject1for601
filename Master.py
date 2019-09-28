@@ -4,13 +4,17 @@
 
 import tweepy #https://github.com/tweepy/tweepy
 import json
-
+import tweepy
+from tweepy import OAuthHandler, Stream
+import re
+from tweepy.streaming import StreamListener
+from datetime import datetime, timedelta
 consumer_key = "xxx"
 consumer_secret = "xxx"
 access_key = "xxx"
 access_secret = "xxx"
 
-def get_all_tweets(screen_name):
+def get_all_tweets():
     
     #Twitter only allows access to a users most recent 3240 tweets with this method
     
@@ -23,7 +27,7 @@ def get_all_tweets(screen_name):
     alltweets = []    
     
     #make initial request for most recent tweets (200 is the maximum allowed count)
-    new_tweets = api.user_timeline(screen_name = screen_name,count=10)
+    new_tweets = api.user_timeline(screen_name = '@museumofscience',count=25)
     
     #save most recent tweets
     alltweets.extend(new_tweets)
@@ -41,25 +45,13 @@ def get_all_tweets(screen_name):
         alltweets.extend(new_tweets)
         
         #update the id of the oldest tweet less one
-        oldest = alltweets[-1].id - 1
-        if(len(alltweets) > 15):
-            break
-        print ("...%s tweets downloaded so far" % (len(alltweets)))
-       
-    #write tweet objects to JSON
-    file = open('tweet1.json', 'w') 
-    print ("Writing tweet objects to JSON please wait...")
-    for status in alltweets:
-        json.dump(status._json,file,sort_keys = True,indent = 4)
-    
-    #close the file
-    print ("Done")
-    file.close()
+       # oldest = alltweets[-1].id - 1
+       # if(len(alltweets) > 15):
+          #   break
+       # print ("...%s tweets downloaded so far" % (len(alltweets)))
+    return alltweets   
 
-if __name__ == '__main__':
-   
-    #pass in the username of the account you want to download
-    get_all_tweets('@museumofscience')
+def get_score(text)
 # Imports the Google Cloud client library
 from google.cloud import language
 from google.cloud.language import enums
@@ -68,27 +60,41 @@ import testjson
 # Instantiates a client
 client = language.LanguageServiceClient()
 
-avg_sentiment = 0 #hold average value of text sentiments
-num_texts = 0 #hold number of texts considered (also iterator for while loop)
+sentimentsList = []
+
+#num_texts = 0 #hold number of texts considered (also iterator for while loop)
 
 # The text to analyze
 
-while num_texts < 25:# can also ask user for num of texts to analyze, though would need add'l variable
     text1 = testjson.gettext()
-    num_texts = num_texts + 1
+    for text1 in text:
+    #num_texts = num_texts + 1
     #text = u"This is BIZARRE! Here's Joe Biden telling the story of his face-off with a gang of razor-wielding ne'er-do-wells led by a guy named 'Corn Pop.'"
-    document = types.Document(
-        content=text1,
-        type=enums.Document.Type.PLAIN_TEXT)
+        document = types.Document(
+            content=text1,
+            type=enums.Document.Type.PLAIN_TEXT)
 
 # Detects the sentiment of the text
-    sentiment = client.analyze_sentiment(document=document).document_sentiment
-    avg_sentiment = (av_sentiment + sentiment) / num_texts
+        sentimentsList.append(client.analyze_sentiment(document=document).document_sentiment)
+        avg_sentiment = (sum(sentimentsList)/len(sentimentsList)
 
-    print('Text: {}'.format(text1))
-    print('Sentiment: {}, {}'.format(sentiment.score, sentiment.magnitude))
-
-print('The average sentiment is %d', avg_sentiment)
+    #print('Text: {}'.format(text1))
+    #print('Sentiment: {}, {}'.format(sentiment.score, sentiment.magnitude))
+                         
+ return avg_sentiments
+#print('The average sentiment is %d', avg_sentiment)
+    #write tweet objects to JSON
+    #file = open('tweet1.json', 'w') 
+   # print ("Writing tweet objects to JSON please wait...")
+    #for status in alltweets:
+     #   json.dump(status._json,file,sort_keys = True,indent = 4)
+    
+    #close the file
+    #print ("Done")
+   # file.close()
+   
+    #pass in the username of the account you want to download
+   # get_all_tweets('@museumofscience')
 
 import json
 import demjson
@@ -103,5 +109,12 @@ def gettext():
     return text
     f.close()
 
-
+def main():
+    collectTweets = get_all_tweets()
+    avg_sentiment, sentimentsList=get_score(collectTweets)
+           
+    print("The average sentimentt is: ", avg_sentiment)
+                         
 #print (gettext())
+if __name__ == '__main__':
+    main()

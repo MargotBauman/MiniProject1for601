@@ -121,3 +121,5 @@ def main():
 #print (gettext())
 if __name__ == '__main__':
     main()
+
+# We used Amanda Maasa's github to help get us over our final issues with the code.

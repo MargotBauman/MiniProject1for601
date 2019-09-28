@@ -89,3 +89,19 @@ while num_texts < 25:# can also ask user for num of texts to analyze, though wou
     print('Sentiment: {}, {}'.format(sentiment.score, sentiment.magnitude))
 
 print('The average sentiment is %d', avg_sentiment)
+
+import json
+import demjson
+import re
+def gettext():
+  with open("/home/ece-student/tweet.json", encoding='utf-8') as f:
+    line=f.read()
+    line=re.sub("'","\"",line)
+    line=re.sub("u'","\"",line)
+    d = json.loads(line)
+    text = d["text"]   
+    return text
+    f.close()
+
+
+#print (gettext())

@@ -55,7 +55,7 @@ def get_score(text1):
 
     average_sentiment = sum(sentiment_score_list)/len(sentiment_score_list)
     return average_sentiment
-print(score(tweet1))
+print(get_score(tweet1))
 
 def main():
     collectTweets = get_all_tweets()

@@ -55,7 +55,23 @@ def get_score(text1):
 
     average_sentiment = sum(sentiment_score_list)/len(sentiment_score_list)
     return average_sentiment
-print(get_score(tweet1))
+print(get_score(tweet1)[0])
+
+def is_satisfied():
+  x,y= 0,0
+  for score in get_score(tweet1)[1]:
+    if score > 0:
+        x = x + 1
+    elif score < 0:
+        y = y + 1
+  if x > y:
+    print("More of the posts about the attraction are positive")
+  elif x < y:
+    print("More of the posts about the attraction are negative")
+  else:
+    print("The posts are equally split between positve and negative")
+  return "done"
+print(is_satisfied())
 
 def main():
     collectTweets = get_all_tweets()

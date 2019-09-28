@@ -4,15 +4,17 @@
 
 import tweepy #https://github.com/tweepy/tweepy
 import json
-import tweepy
-from tweepy import OAuthHandler, Stream
+import json
+import demjson
 import re
-from tweepy.streaming import StreamListener
-from datetime import datetime, timedelta
-consumer_key = "xxx"
-consumer_secret = "xxx"
-access_key = "xxx"
-access_secret = "xxx"
+
+
+#Twitter API credentials
+consumer_key = ''
+consumer_secret = ''
+access_key = ''
+access_secret = '' 
+
 
 def get_all_tweets():
     
@@ -27,86 +29,33 @@ def get_all_tweets():
     alltweets = []    
     
     #make initial request for most recent tweets (200 is the maximum allowed count)
-    new_tweets = api.user_timeline(screen_name = '@museumofscience',count=25)
-    
-    #save most recent tweets
-    alltweets.extend(new_tweets)
-    
-    #save the id of the oldest tweet less one
-    #oldest = alltweets[-1].id - 1
-    
-    #keep grabbing tweets until there are no tweets left to grab
-    while len(new_tweets) > 0:
-        
-        #all subsiquent requests use the max_id param to prevent duplicates
-        new_tweets = api.user_timeline(screen_name = '@museumofscience',count=25)
-        
-        #save most recent tweets
-        alltweets.extend(new_tweets)
-        
-        #update the id of the oldest tweet less one
-       # oldest = alltweets[-1].id - 1
-        if(len(alltweets) > 25):
-             break
-        print ("...%s tweets downloaded so far" % (len(alltweets)))
-    return alltweets   
+    new_tweets = api.user_timeline(screen_name = "ussconstitution",count=10)
+    for tweet in new_tweets:
+        alltweets = alltweets + [tweet.text]
+    return alltweets
+tweet1=get_all_tweets()
+print(tweet1)
 
-def get_score(text):
-# Imports the Google Cloud client library
-	from google.cloud import language
-	from google.cloud.language import enums
-	from google.cloud.language import types
-	import testjson
+from google.cloud import language
+from google.cloud.language import enums
+from google.cloud.language import types
+
 # Instantiates a client
-	client = language.LanguageServiceClient()
+sentiment_score_list = []
+def get_score(text1):
+    for tweet in text1:
+        client = language.LanguageServiceClient()  
+        # The text to analyze
+        document = types.Document(
+            content=tweet,
+            type=enums.Document.Type.PLAIN_TEXT)
 
-	sentimentsList = []
+        # Detects the sentiment of the text
+        sentiment_score_list.append(client.analyze_sentiment(document=document).document_sentiment.score)
 
-# The text to analyze
-
-	text1 = testjson.gettext()
-	for text1 in text:
-  
-            document = types.Document(
-                content=text1,
-                type=enums.Document.Type.PLAIN_TEXT)
-
-# Detects the sentiment of the text
-            sentimentsList.append(client.analyze_sentiment(document=document).document_sentiment)
-            avg_sentiment = (sum(sentimentsList))/(len(sentimentsList))
-
-
-    #print('Text: {}'.format(text1))
-    #print('Sentiment: {}, {}'.format(sentiment.score, sentiment.magnitude))
-                         
-#print('The average sentiment is %d', avg_sentiment)
-    #write tweet objects to JSON
-	file = open('tweet1.json', 'w') 
-	print ("Writing tweet objects to JSON please wait...")
-	for status in alltweets:
-            json.dump(status._json,file,sort_keys = True,indent = 4)
-    
-    #close the file
-	print ("Done")
-	file.close()
-   
-    #pass in the username of the account you want to download
-	get_all_tweets('@museumofscience')
-
-	return avg_sentiment
-
-import json
-import demjson
-import re
-def gettext():
-  with open("/home/ece-student/tweet.json", encoding='utf-8') as f:
-    line=f.read()
-    line=re.sub("'","\"",line)
-    line=re.sub("u'","\"",line)
-    d = json.loads(line)
-    text = d["text"]   
-    return text
-    f.close()
+    average_sentiment = sum(sentiment_score_list)/len(sentiment_score_list)
+    return average_sentiment
+print(score(tweet1))
 
 def main():
     collectTweets = get_all_tweets()

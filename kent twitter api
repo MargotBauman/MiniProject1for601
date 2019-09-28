@@ -57,7 +57,6 @@ def get_all_tweets(screen_name):
     file.close()
 
 if __name__ == '__main__':
-    #get account from user
-    screen_name = input("Please enter the twitter handle of the attraction you wish to assess: ")
+   
     #pass in the username of the account you want to download
-    get_all_tweets(screen_name)
+    get_all_tweets('@museumofscience')

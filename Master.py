@@ -83,4 +83,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-#  We used Amanda Maasa's github to help get us over our final issues with the code.
+#  We used Amanda Maas' github to help get us over our final issues with the code.

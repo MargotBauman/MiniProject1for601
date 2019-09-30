@@ -16,3 +16,5 @@ Our final user story is a visitor that wants to evaluate a particular attraction
 
 Architecture:
 Our app architecture hardcodes the target twitter feed's user name and feeds this into the twitter apis to get ten tweets. (Since our user story is about current evaluation, we do not go further back into the feed's history, though this is possible.) From there, the text of the tweets is fed into the Google Natural Language api and the average sentiment is returned. In addition, the app tells the users whether the greater number of tweets were positive or negative (or the numbers were equal), which can account for outliers unduly affecting the mean sentiment score we return (one super positve score might more than offset nine slightly negative scores in the mean). 
+
+The current screen_name hardcoded into our project is the one for hte Museum of Science. This would allow a visitor to Boston to evaluate whether they want to go to the Museum (case 5) or the Museum to assess reaction to its offerings (case 5b). We also tested the app with the screen_name of the USS Constitution. Both sites showed positive average ratings and more positive posts than negative.
